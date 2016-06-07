@@ -11,7 +11,7 @@ class Scamp < Formula
   end
 
   depends_on "fftw"
-  depends_on "cdsclient"
+  depends_on "homebrew/science/cdsclient"
   depends_on "plplot" => :recommended
   depends_on "autoconf" => :build
 
