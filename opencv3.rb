@@ -1,3 +1,5 @@
+require File.expand_path("../Requirements/cuda_requirement", __FILE__)
+
 class Opencv3 < Formula
   desc "Open source computer vision library, version 3"
   homepage "http://opencv.org/"
@@ -25,13 +27,20 @@ class Opencv3 < Formula
       url "https://github.com/Itseez/opencv/commit/c7bdbef5042dadfe032dfb5d80f9b90bec830371.diff"
       sha256 "106785f8478451575026e9bf3033e418d8509ffb93e62722701fa017dc043d91"
     end
+
+    patch do
+      # patch fixes build error when including example sources
+      # can be removed with next release
+      url "https://github.com/Itseez/opencv/commit/cdb9c60dcb65e04e7c0bd6bef9b86841191c785a.diff"
+      sha256 "a14499a8c16545cf1bb206cfe0ed8a65697100dca9b2ae5274516d1213a1a32b"
+    end
   end
 
   bottle do
-    revision 2
-    sha256 "1b2e9b653936ec3acaad8be12a0de4fe299bbd5c0358ec148cc950fa5871d0f1" => :el_capitan
-    sha256 "c83ef032b8ef9f0729c4862c21786dc318da40e9b57015c4a7732255259a87e3" => :yosemite
-    sha256 "1566a5ea4564fe06993890010affb4ccec2914e5dd667fbc2c8104585a449bdc" => :mavericks
+    revision 4
+    sha256 "47fc984f127ec80f786aa009b4a698430516b307da6f0caf5b20e6fb2f1425dc" => :el_capitan
+    sha256 "52a75aa66b42daed8f0c26e6f1bf82f753b4c23b7bb83ff55a33da6322a08bb4" => :yosemite
+    sha256 "710f4eb5c3499f41c2859593ba940b0d8d1c7c9c7d0c52fb23584efe7a43f9a3" => :mavericks
   end
 
   head do
@@ -49,6 +58,7 @@ class Opencv3 < Formula
   option "32-bit"
   option "with-contrib", 'Build "extra" contributed modules'
   option "with-cuda", "Build with CUDA v7.0+ support"
+  option "with-examples", "Install C and python examples (sources)"
   option "with-java", "Build with Java support"
   option "with-opengl", "Build with OpenGL support (must use --with-qt5)"
   option "with-quicktime", "Use QuickTime for Video I/O instead of QTKit"
@@ -65,6 +75,7 @@ class Opencv3 < Formula
 
   depends_on :ant => :build if build.with? "java"
   depends_on "cmake" => :build
+  depends_on CudaRequirement => :optional
   depends_on "pkg-config" => :build
 
   depends_on "eigen" => :recommended
@@ -159,6 +170,11 @@ class Opencv3 < Formula
     if build.with? "contrib"
       resource("contrib").stage buildpath/"opencv_contrib"
       args << "-DOPENCV_EXTRA_MODULES_PATH=#{buildpath}/opencv_contrib/modules"
+    end
+
+    if build.with? "examples"
+      args << "-DINSTALL_C_EXAMPLES=ON"
+      args << "-DINSTALL_PYTHON_EXAMPLES=ON"
     end
 
     # OpenCL 1.1 is required, but Snow Leopard and older come with 1.0

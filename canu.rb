@@ -1,17 +1,17 @@
 class Canu < Formula
   desc "Single molecule sequence assembler"
   homepage "http://canu.readthedocs.org/en/latest/"
-  url "https://github.com/marbl/canu/archive/v1.2.tar.gz"
-  sha256 "d3ad2afd9ca0967cbfa401342ff118b1eb9ed86237507c7d74a4543d1e876abc"
+  url "https://github.com/marbl/canu/archive/v1.3.tar.gz"
+  sha256 "7a85e4999baf75553f738b9fb263c17772d7630368d3b7321b8d90f3dc584457"
   head "https://github.com/marbl/canu.git"
   # doi "10.1038/nbt.3238"
   # tag "bioinformatics"
 
   bottle do
-    sha256 "d08ddccdf35db8f56ca3fe4ffab9ac2399eccc8a69d132af5da08f051fd0444f" => :el_capitan
-    sha256 "e10a7e2c267357796ef323d658d552137a0696eca387f0cff440f27961e8e921" => :yosemite
-    sha256 "d6457d33343be2b51eba8a42ba984ed7b4fc4b9b6f4995a209cc0f76b790fd18" => :mavericks
-    sha256 "1cd6d0cebffef5895dc6e532a837f8f10e126920f298bee8cde49dd0c2f41305" => :x86_64_linux
+    sha256 "f37d258084205d89ec0aecaa3c04500a394d10b6f357f790ca75bbc40b6f2af3" => :el_capitan
+    sha256 "564612c7a5b5de07e7dbd46586df47380f0149c78a21c25abcd215a41727bd98" => :yosemite
+    sha256 "496e8b42bdcca4612cede42d3676345a14bfb234937cfb314d4d65a9cea7ae26" => :mavericks
+    sha256 "cf424d48cdd5a6a427b77de3dc4ea55fa6a9b299e6c2d0e84baf8e231ee3de94" => :x86_64_linux
   end
 
   # Fix fatal error: 'omp.h' file not found

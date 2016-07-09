@@ -1,16 +1,17 @@
 class Spades < Formula
   desc "SPAdes: de novo genome assembly"
   homepage "http://bioinf.spbau.ru/spades/"
-  url "http://spades.bioinf.spbau.ru/release3.8.0/SPAdes-3.8.0.tar.gz"
-  sha256 "36e698546d3cfbbd26d8ddec13907c48025ccb2ca94803143398572dbfc90681"
+  url "http://spades.bioinf.spbau.ru/release3.8.1/SPAdes-3.8.1.tar.gz"
+  sha256 "8867c5d1fd1ae7eda015a58a0ca518cebe3968ea8a2eb9d85d397243afc6b3b0"
   # tag "bioinformatics"
   # doi "10.1089/cmb.2012.0021"
 
   bottle do
     cellar :any
-    sha256 "cd62c5f0d7e4b1448cc6add95c57d93ef804b82b29667836553dfb5f7684e978" => :el_capitan
-    sha256 "8b57ca106ce3c9e46151efbf10bc1befdf0a666e9ad7d920234502609dbbd005" => :yosemite
-    sha256 "7d644a773b9c4ecabecb711f8e10933e978bc542cc155a0a6c9d851d72c57780" => :mavericks
+    sha256 "6526d2a14aacc3f8baefda09d8632cff099e22b17686fe0ee45928d38111f1fb" => :el_capitan
+    sha256 "905914438e52e201c4ce96ac6ba54402bdef6ed3f0842bf648ab707f67ba70ac" => :yosemite
+    sha256 "10f98967063facfd4b7af7d2f216171f14abbabe22b279433df25b63289c073a" => :mavericks
+    sha256 "10b6daa5500c24f3560ad486a2308c250183b5e71ef55d6a6da9dee0b52d747f" => :x86_64_linux
   end
 
   depends_on "cmake" => :build
@@ -22,8 +23,6 @@ class Spades < Formula
   end
 
   def install
-    inreplace "ext/src/cityhash/city.cc", "#ifdef __SSE4_2__", "#if 0"
-
     mkdir "src/build" do
       system "cmake", "..", *std_cmake_args
       system "make", "install"

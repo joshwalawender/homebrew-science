@@ -7,18 +7,18 @@ end
 class R < Formula
   desc "Software environment for statistical computing"
   homepage "https://www.r-project.org/"
-  url "https://cran.rstudio.com/src/base/R-3/R-3.3.0.tar.gz"
-  mirror "https://cran.r-project.org/src/base/R-3/R-3.3.0.tar.gz"
-  sha256 "9256b154b1a5993d844bee7b1955cd49c99ad72cef03cce3cd1bdca1310311e4"
+  url "https://cran.rstudio.com/src/base/R-3/R-3.3.1.tar.gz"
+  mirror "https://cran.r-project.org/src/base/R-3/R-3.3.1.tar.gz"
+  sha256 "3dc59ae5831f5380f83c169bac2103ad052efe0ecec4ffa74bde4d85a0fda9e2"
 
   # Do not remove executable permission from these scripts.
   # See https://github.com/Linuxbrew/linuxbrew/issues/614
   skip_clean "lib/R/bin" unless OS.mac?
 
   bottle do
-    sha256 "709a51843abbc15cb34c7446989388b9bf3d4069dba46d254cefcde74ced90e7" => :el_capitan
-    sha256 "1ac69cc8b7e1a9bc5a479a0344994014b71de901fc4071cfd920663bbe4c4146" => :yosemite
-    sha256 "c7c15b6c07ecfe07ddbbef047564c8674920fb3b85dd4c355e186fda533514ca" => :mavericks
+    sha256 "ac08e34ccfc063e7c307754da56004aed9de9ff512a5a31ba7f48b220dd19a6a" => :el_capitan
+    sha256 "a63091632f248d5be2444b17eaf3050e124b8cc6cf53d7ab54cfe2d052ca6259" => :yosemite
+    sha256 "ae9f6b850daac46ae8a2a3bc33e13b83ae7b13782dfcfa4a830cf75dfa195a3d" => :mavericks
   end
 
   head do

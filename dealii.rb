@@ -1,20 +1,18 @@
 class Dealii < Formula
   desc "open source finite element library"
   homepage "http://www.dealii.org"
-  url "https://github.com/dealii/dealii/releases/download/v8.3.0/dealii-8.3.0.tar.gz"
-  sha256 "4ddf72632eb501e1c814e299f32fc04fd680d6fda9daff58be4209e400e41779"
-  revision 2
-
-  bottle do
-    cellar :any
-    revision 1
-    sha256 "8e6d80fb2056830542a11449104d7aea24a848b9eafe37a3b52689671a1724e6" => :el_capitan
-    sha256 "36a242efaa84240e6fc934cc361ec005f1b18ef1b08a41266c9b715f7efc1f07" => :yosemite
-    sha256 "ee59dbb333c28645f994ab08e42ba166a9ff2198db4df865c204d4cede554b12" => :mavericks
-  end
+  url "https://github.com/dealii/dealii/releases/download/v8.4.1/dealii-8.4.1.tar.gz"
+  sha256 "00a0e92d069cdafd216816f1aff460f7dbd48744b0d9e0da193287ebf7d6b3ad"
 
   head do
     url "https://github.com/dealii/dealii.git"
+  end
+
+  bottle do
+    cellar :any
+    sha256 "592e2da96fcc9455cbacb2b12b446cab20fe9fc32dceea6e9412641339107e05" => :el_capitan
+    sha256 "75b52df3214c1a6e9202ecfc301e03520152bfe3b407b45d2544ed066f2296dc" => :yosemite
+    sha256 "d848dbc4d52e2ade5661ec076d90de3853ae7fcdcec17142992677caf6d770f2" => :mavericks
   end
 
   option "with-testsuite", "Run full test suite (7000+ tests). Takes a lot of time."
@@ -45,6 +43,14 @@ class Dealii < Formula
   needs :cxx11
   def install
     ENV.cxx11
+
+    # PETSc 3.7.x added a parameter to PetscOptionsSetValue()
+    # https://bitbucket.org/petsc/petsc/src/5d547b27bccc01eacb9fc0eef6ae71e85dce2b0c/src/sys/objects/options.c?at=master&fileviewer=file-view-default#options.c-1078
+    # See upstream PR: https://github.com/dealii/dealii/pull/2327
+    inreplace "source/lac/petsc_precondition.cc",
+      "PetscOptionsSetValue(\"",
+      "PetscOptionsSetValue(NULL,\""
+
     args = %W[
       -DCMAKE_BUILD_TYPE=DebugRelease
       -DCMAKE_INSTALL_PREFIX=#{prefix}
@@ -90,12 +96,7 @@ class Dealii < Formula
     mkdir "build" do
       system "cmake", "..", *args
       system "make"
-      # run minimal test cases (8 tests)
-      log_name = "make-test.log"
-      system "make test 2>&1 | tee #{log_name}"
-      ohai `grep "tests passed" "#{log_name}"`.chomp
-      prefix.install "#{log_name}"
-      # run full test suite if really needed
+      system "make", "test"
       if build.with? "testsuite"
         system "make", "setup_tests"
         system "ctest", "-j", Hardware::CPU.cores
@@ -126,7 +127,7 @@ class Dealii < Formula
           system "make", "run"
         end
         # change to Trilinos
-        inreplace "step-40.cc", "#define USE_PETSC_LA", "//#define USE_PETSC_LA"
+        inreplace "step-40.cc", "#  define USE_PETSC_LA", "//#  define USE_PETSC_LA"
         system "make", "release"
         if build.with? "mpi"
           system "mpirun", "-np", Hardware::CPU.cores, "step-40"

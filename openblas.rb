@@ -3,13 +3,16 @@ class Openblas < Formula
   homepage "http://www.openblas.net/"
   url "https://github.com/xianyi/OpenBLAS/archive/v0.2.18.tar.gz"
   sha256 "7d9f8d4ea4a65ab68088f3bb557f03a7ac9cb5036ef2ba30546c3a28774a4112"
+  revision 2
   head "https://github.com/xianyi/OpenBLAS.git", :branch => "develop"
 
   bottle do
     cellar :any
-    sha256 "ec121967cdbee65fd07a0ce43bcf7260f5c6d4360ab792a05958adf4a5d94a37" => :el_capitan
-    sha256 "f0c87b50cfa83d1869a34b2c3dd2f55f4fc7bd2d2ab58c4500079b9cb8800c1e" => :yosemite
-    sha256 "57d330e26b17134d0850f03e7de876e8b53d735687aeb01051133dc85bc1cb96" => :mavericks
+    revision 1
+    sha256 "617d14f7d52b594bcd0cc9bf9e1b32a61b9854c3f2245d9aa9671e8b9fbb3563" => :el_capitan
+    sha256 "302263ab9802a45e8a50da29181b397f538959c9fd103a81a65ad5b13be12fe5" => :yosemite
+    sha256 "a7b6354036ed34040d64d382d208fb7293369767806a78238bb29c60858f0bd4" => :mavericks
+    sha256 "52ed6d2b81d70c9db8d85db53de64ec2b9cf0ad3ab05cbc3f5c214dfab54a740" => :x86_64_linux
   end
 
   # OS X provides the Accelerate.framework, which is a BLAS/LAPACK impl.
@@ -25,12 +28,12 @@ class Openblas < Formula
     ENV["USE_OPENMP"] = "1" if build.with? "openmp"
 
     # Must call in two steps
-    system "make", "FC=#{ENV["FC"]}", "libs", "netlib", "shared"
-    system "make", "FC=#{ENV["FC"]}", "tests"
+    system "make", "CC=#{ENV["CC"]}", "FC=#{ENV["FC"]}", "libs", "netlib", "shared"
+    system "make", "CC=#{ENV["CC"]}", "FC=#{ENV["FC"]}", "tests"
     system "make", "PREFIX=#{prefix}", "install"
     so = OS.mac? ? "dylib" : "so"
-    ln_s lib/"libopenblas.#{so}", lib/"libblas.#{so}"
-    ln_s lib/"libopenblas.#{so}", lib/"liblapack.#{so}"
+    lib.install_symlink "libopenblas.#{so}" => "libblas.#{so}"
+    lib.install_symlink "libopenblas.#{so}" => "liblapack.#{so}"
   end
 
   test do

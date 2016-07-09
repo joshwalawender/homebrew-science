@@ -9,12 +9,13 @@ class Getdp < Formula
   homepage "http://www.geuz.org/getdp/"
   url "http://www.geuz.org/getdp/src/getdp-2.8.0-source.tgz"
   sha256 "7941809d01b3b045f70382b719dc1bcfeea9d794ac075771a1e82be0960748dd"
+  revision 1
   head "https://geuz.org/svn/getdp/trunk", :using => GetdpSvnStrategy
 
   bottle do
-    sha256 "0fe5768bc9c0f8bc248c8374046b6b35de0fad12d457a15f619941d6fa461cee" => :el_capitan
-    sha256 "cf606693962d6f06ecd55d1a6bf4053b0f6c7b5a360216e32602185275d1bf27" => :yosemite
-    sha256 "5dc87f5057fec43512cace0b0e3fc0c84752a9c01b8b238dbf7584d211f0135b" => :mavericks
+    sha256 "b2f0dd5ce689ad7e05f99366d226e60081edc5e30befbbb69b3aaece8fb3c29f" => :el_capitan
+    sha256 "fde6273ece93671368c3f543118ca76e9e6f6cdeb9fffc75dae47df5cdcdf51e" => :yosemite
+    sha256 "12efa0266fbef422414208420e63b67e641befd17150ca081298bbc8827f1876" => :mavericks
   end
 
   option "without-test", "skip build-time tests (not recommended)"
@@ -32,6 +33,18 @@ class Getdp < Formula
   depends_on "slepc"    => :recommended
 
   depends_on "cmake"    => :build
+
+  # patches for PETSc >= 3.7
+  # thanks @schoeps
+  patch do
+    url "https://gist.githubusercontent.com/schoeps/53365da617aa6cfac332d0a19235215f/raw/e4df9983682e189bd3a2cb33434a994b45757b8d/EigenSolve.patch"
+    sha256 "1950275890bf8ba1ad23ec80ff012921711fa0f3b5ee16ceac8be27ac356deea"
+  end
+
+  patch do
+    url "https://gist.githubusercontent.com/schoeps/53365da617aa6cfac332d0a19235215f/raw/e4df9983682e189bd3a2cb33434a994b45757b8d/LinAlg_PETSC.patch"
+    sha256 "43c3d0ba87c07846818f147e2ee66110e5b9c9ebd856b0ae682d6d1c014d76c6"
+  end
 
   def install
     args = std_cmake_args

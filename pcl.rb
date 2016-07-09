@@ -1,60 +1,23 @@
-class CudaRequirement < Requirement
-  build true
-  fatal true
-
-  satisfy { which "nvcc" }
-
-  env do
-    # Nvidia CUDA installs (externally) into this dir (hard-coded):
-    ENV.append "CFLAGS", "-F/Library/Frameworks"
-    # # because nvcc has to be used
-    ENV.append "PATH", which("nvcc").dirname, ":"
-  end
-
-  def message
-    <<-EOS.undent
-      To use this formula with NVIDIA graphics cards you will need to
-      download and install the CUDA drivers and tools from nvidia.com.
-
-          https://developer.nvidia.com/cuda-downloads
-
-      Select "Mac OS" as the Operating System and then select the
-      'Developer Drivers for MacOS' package.
-      You will also need to download and install the 'CUDA Toolkit' package.
-
-      The `nvcc` has to be in your PATH then (which is normally the case).
-
-    EOS
-  end
-end
+require File.expand_path("../Requirements/cuda_requirement", __FILE__)
 
 class Pcl < Formula
   desc "Library for 2D/3D image and point cloud processing"
   homepage "http://www.pointclouds.org/"
-  url "https://github.com/PointCloudLibrary/pcl/archive/pcl-1.7.2.tar.gz"
-  sha256 "479f84f2c658a6319b78271111251b4c2d6cf07643421b66bbc351d9bed0ae93"
 
   stable do
-    patch do
-      url "https://gist.githubusercontent.com/fran6co/a6e1e44b1b43b2d150cd/raw/0c4aeb301ed523c81cd57c63b0a9804d49af9848/boost.patch"
-      sha256 "5409b0899f65d918248a8fdfb820478cc0b191c50339e16692a911fab76c3f43"
-    end
-    # Fixes PCL for VTK 6.2.0
-    patch do
-      url "https://patch-diff.githubusercontent.com/raw/PointCloudLibrary/pcl/pull/1205.patch"
-      sha256 "5b7051bb1e9f6f23364fe64221cf96980750a300695b5787860013786438e88c"
-    end
-  end
-
-  bottle do
-    revision 2
-    sha256 "a230eba811e4a97b10fdabac6335156a57991aa1ae2c6c1e76836a15af1a9e52" => :el_capitan
-    sha256 "7a3a3c83aa71a9a66db30d337a1d6e8388ee5ad2bbfebaca0638ad858bd122a9" => :yosemite
-    sha256 "bbd411756ebeac0c48f0b148503255444e6520fdb8ecacc92bf4ccdadd8f21eb" => :mavericks
+    url "https://github.com/PointCloudLibrary/pcl/archive/pcl-1.8.0.tar.gz"
+    sha256 "9e54b0c1b59a67a386b9b0f4acb2d764272ff9a0377b825c4ed5eedf46ebfcf4"
   end
 
   head do
     url "https://github.com/PointCloudLibrary/pcl.git"
+  end
+
+  bottle do
+    revision 1
+    sha256 "e327a60a55dc7797da75bc39c88d26e753fbe5b5eedf86728fe6d6dddb256896" => :el_capitan
+    sha256 "babbd5cffed3a43dddd3ad1410612e2e7d4665700268af529a63b15883ae4e29" => :yosemite
+    sha256 "6d481a275f11848cdccac7b77710077449b27548bdafeccee146e0f1dbcc441a" => :mavericks
   end
 
   option "with-examples", "Build pcl examples."
@@ -72,14 +35,10 @@ class Pcl < Formula
   depends_on "qhull"
   depends_on "libusb"
 
-  if build.head?
-    depends_on "glew"
-    depends_on CudaRequirement => :optional
-    depends_on "qt" => :optional
-    depends_on "qt5" => :optional
-  else
-    depends_on "qt" => :recommended
-  end
+  depends_on "glew"
+  depends_on CudaRequirement => :optional
+  depends_on "qt" => :optional
+  depends_on "qt5" => :optional
 
   if build.with? "qt"
     depends_on "sip" # Fix for building system
@@ -137,10 +96,14 @@ class Pcl < Formula
         -DBUILD_apps_3d_rec_framework=AUTO_OFF
         -DBUILD_apps_cloud_composer=AUTO_OFF
         -DBUILD_apps_in_hand_scanner=AUTO_OFF
-        -DBUILD_apps_modeler=AUTO_OFF
         -DBUILD_apps_optronic_viewer=AUTO_OFF
         -DBUILD_apps_point_cloud_editor=AUTO_OFF
       ]
+      if !build.head? && build.without?("qt") && build.without?("qt5")
+        args << "-DBUILD_apps_modeler:BOOL=OFF"
+      else
+        args << "-DBUILD_apps_modeler=AUTO_OFF"
+      end
     else
       args << "-DBUILD_apps:BOOL=OFF"
     end
